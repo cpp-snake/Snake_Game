@@ -1,96 +1,77 @@
-#include <ncurses.h>
+#include <iostream>
+#include <fstream>
+#include "ncurses.h"
+#include "map.h"
+using namespace std;
 
-#define map_height 25
-#define map_width 50
-
-#define score_board_height 10
-#define score_board_width 20
-
-#define mission_board_height 10
-#define mission_board_width 20
-
-char map[25][50] = {
-    {"2111111111111111111111111111111111111111111111112"},
-    {"1000000000000000000000000000000000000000000000001"},
-    {"1000000000000000000000000000000000000000000000001"},
-    {"1000000000000000000000000000000000000000000000001"},
-    {"1000000000000000000000000000000000000000000000001"},
-    {"1000000000000000000000000000000000000000000000001"},
-    {"1000000000000000000000000000000000000000000000001"},
-    {"1000000000000000000000000000000000000000000000001"},
-    {"1000000000000000000000000000000000000000000000001"},
-    {"1000000000000000000000000000000000000000000000001"},
-    {"1000000000000000000000000000000000000000000000001"},
-    {"1000000000000000000000000000000000000000000000001"},
-    {"1000000000000000000000034400000000000000000000001"},
-    {"1000000000000000000000000000000000000000000000001"},
-    {"1000000000000000000000000000000000000000000000001"},
-    {"1000000000000000000000000000000000000000000000001"},
-    {"1000000000000000000000000000000000000000000000001"},
-    {"1000000000000000000000000000000000000000000000001"},
-    {"1000000000000000000000000000000000000000000000001"},
-    {"1000000000000000000000000000000000000000000000001"},
-    {"1000000000000000000000000000000000000000000000001"},
-    {"1000000000000000000000000000000000000000000000001"},
-    {"1000000000000000000000000000000000000000000000001"},
-    {"1000000000000000000000000000000000000000000000001"},
-    {"2111111111111111111111111111111111111111111111112"},
-};
-
-WINDOW* makeScoreBoard()
+Map::Map(string file_name)
 {
-    WINDOW *wScoreBoard = subwin(stdscr,score_board_height, score_board_width, 0, map_width + 10);
-    box(wScoreBoard, 0, 0);
-    wrefresh(wScoreBoard);
-    return wScoreBoard;
-}
+    ifstream file(file_name);
+    int number;
 
-WINDOW* makeMissionBoard()
-{
-    WINDOW *wMissionBoard = subwin(stdscr, mission_board_height, mission_board_width, 15, map_width + 10);
-    box(wMissionBoard, 0, 0);
-    wrefresh(wMissionBoard);
-    return wMissionBoard;
-}
-
-WINDOW* makeMap()
-{
-    WINDOW *wMap = subwin(stdscr, map_height, map_width, 0, 0);
-
-    for (int row = 0; row < map_height; row++)
+    for (int i = 0; i < MAPSIZE; i++)
     {
-        for (int col = 0; col < map_width; col++)
+        for (int j = 0; j < MAPSIZE; j++)
         {
-            switch (map[row][col])
-            {
-            case '0':
-                mvwprintw(wMap, row, col, " ");
-                break;
-            case '1':
-                mvwprintw(wMap, row, col, "+");
-                break;
-            case '2':
-                mvwprintw(wMap, row, col, "*");
-                break;
-            }
+            file >> number;
+            map_stat[i][j] = number;
         }
+    }
+    file.close();
+}
+
+void Map::test()
+{
+    for (int i = 0; i < MAPSIZE; i++)
+    {
+        for (int j = 0; j < MAPSIZE; j++)
+        {
+
+            cout << map_stat[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+WINDOW *Map::init()
+{
+    start_color();
+    init_pair(3, COLOR_GREEN, COLOR_GREEN);
+    init_pair(2, COLOR_WHITE, COLOR_WHITE);
+    init_pair(1, COLOR_BLACK, COLOR_BLACK);
+    WINDOW *wMap = subwin(stdscr, MAPSIZE, MAPSIZE, 0, 0);
+
+    for (int row = 0; row < MAPSIZE; row++)
+    {
+        for (int col = 0; col < MAPSIZE; col++)
+        {
+            attron(COLOR_PAIR(map_stat[row][col] + 1));
+            printw("   ");
+            attroff(COLOR_PAIR(map_stat[row][col] + 1));
+        }
+        printw("\n");
     }
 
     wrefresh(wMap);
     return wMap;
 }
 
-int main()
+int Map::get_stat_value(int row, int col){
+    return map_stat[row][col];
+}
+
+// 아이템이 나올 좌표
+void Map::set_item_map(int row, int col, int item_number)
 {
-    initscr();
-    start_color();
+    map_stat[row][col] = item_number;
+}
 
-    WINDOW *wMap = makeMap();
-    WINDOW *wScoreBoard = makeScoreBoard();
-    WINDOW *wMissionBoard = makeMissionBoard();
-
-    getch();
-    endwin();
-
-    return 0;
+// 아이템이 삭제되고 좌표가 0으로 돌아감.
+void Map::delete_item_map(int row, int col)
+{
+    init_pair(1, COLOR_BLACK, COLOR_BLACK);
+    map_stat[row][col] = 0;
+    attron(COLOR_PAIR(1));
+    mvprintw(col, 3*row, "   ");
+    attroff(COLOR_PAIR(1));
 }
