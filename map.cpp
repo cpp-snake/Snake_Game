@@ -59,3 +59,19 @@ WINDOW *Map::init()
 int Map::get_stat_value(int row, int col){
     return map_stat[row][col];
 }
+
+// 아이템이 나올 좌표
+void Map::set_item_map(int row, int col, int item_number)
+{
+    map_stat[row][col] = item_number;
+}
+
+// 아이템이 삭제되고 좌표가 0으로 돌아감.
+void Map::delete_item_map(int row, int col)
+{
+    init_pair(1, COLOR_BLACK, COLOR_BLACK);
+    map_stat[row][col] = 0;
+    attron(COLOR_PAIR(1));
+    mvprintw(col, 3*row, "   ");
+    attroff(COLOR_PAIR(1));
+}
