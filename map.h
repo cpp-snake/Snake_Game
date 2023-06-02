@@ -13,7 +13,7 @@ class Map
 public:
     Map(std::string file_name);
     void test();
-    WINDOW *init();
+    void init();
     int get_stat_value(int row, int col);
     void set_stat_value(int row, int col, int value);
 };
