@@ -53,10 +53,12 @@ void Map::init()
     refresh();
 }
 
-int Map::get_stat_value(int row, int col){
+int Map::get_stat_value(int row, int col)
+{
     return map_stat[row][col];
 }
 
-void Map::set_stat_value(int row, int col, int value){
+void Map::set_stat_value(int row, int col, int value)
+{
     map_stat[row][col] = value;
 }
