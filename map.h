@@ -14,7 +14,7 @@ public:
     int map_stat[MAPSIZE][MAPSIZE];
     Map(std::string file_name);
     void test();
-    WINDOW *init();
+    void init();
     int get_stat_value(int row, int col);
     void set_item_map(int row, int col, int item_number);
     void delete_item_map(int row, int col);

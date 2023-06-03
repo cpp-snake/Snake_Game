@@ -7,8 +7,12 @@ using namespace std;
 
 #define TICK 0.5
 
+#define HEAD 3 // map_stat에 표시될 HEAD 좌표 값
+#define TAIL 4
+
 enum Direction { STOP = 0, LEFT, RIGHT, UP, DOWN };
 
+//x가 열이고 y가 행 함수 대입은 행 열(y,x)순
 class Snake{
     int head_x, head_y; // 뱀 머리 좌표
     vector<int> tail_x; // 뱀 꼬리 좌표 x

@@ -12,6 +12,18 @@ bool isRudder(int ch){
     return ch == KEY_LEFT || ch == KEY_RIGHT || ch == KEY_DOWN || ch == KEY_UP;
 }
 
+// 좌표 값 출력 디버깅용
+void printMap(Map& map){ 
+    int i = 12, j = 110;
+    move(i++, j);
+    for (int row = 0; row < MAPSIZE; row++)
+    {
+        for (int col = 0; col < MAPSIZE; col++)
+            printw(" %d ", map.get_stat_value(row, col));
+        move(i++, j);
+    }
+}
+
 int main(){
     screen_setup();
     Map map("map_design.txt");
@@ -72,9 +84,11 @@ int main(){
                     break;
             }
 
+            // 올바른 방향키가 들어오면 스네이크 이동
             if(is_direction_changed){
                 snake.move(map);
                 snake.draw();
+                printMap(map);
                 lastUpdateTime = std::chrono::system_clock::now();  // 업데이트 시간 갱신
             }
         }
@@ -87,6 +101,7 @@ int main(){
             if (elapsedSeconds.count() >= TICK) {  // 1초 이상 경과한 경우
                 snake.move(map);
                 snake.draw();
+                printMap(map);
                 lastUpdateTime = currentTime;  // 업데이트 시간 갱신
             }
         }

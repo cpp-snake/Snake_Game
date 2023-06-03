@@ -74,7 +74,16 @@ void Snake::move(Map& map){ // 키 입력에 따라서 snake 좌표 이동
                 screen_teardown();
                 exit(0);
             }
-                
+
+    // 맵 좌표 수정 뱀 머리:3 꼬리:4
+
+    // 이전 꼬리 부분 좌표 제거(안지우면 그대로 두고 감)
+    map.set_stat_value(tail_y[tailLength], tail_x[tailLength], 0);
+
+    //  맵 좌표 수정
+    map.set_stat_value(head_y, head_x, HEAD);
+    for(int i = 0; i < tailLength; i++)
+        map.set_stat_value(tail_y[i], tail_x[i], TAIL);
 }
 
 void Snake::draw(){ // 뱀의 현재 위치에 따라 출력
