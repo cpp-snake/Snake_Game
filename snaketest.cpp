@@ -77,7 +77,7 @@ int main()
         }
         if (meet_item(growth_item, snake))
         {
-            snake.increase_length();
+            snake.increase_length(map);
             growth_item = item.generate_growth_item(map);
             next_growth_time = now + chrono::seconds(GROWTH_ITEM_TICK);
         }

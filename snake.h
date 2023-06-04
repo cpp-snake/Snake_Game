@@ -35,7 +35,7 @@ public:
     void set_dir(Direction d); // 방향 설정
     Direction get_dir();
 
-    void increase_length();
+    void increase_length(Map &map);
     void decrease_length(Map &map);
 
     int get_head_x();

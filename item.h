@@ -8,8 +8,8 @@
 using namespace std;
 
 #define item_Appeard_Time 5
-#define POISON 5
-#define GROWTH 6
+#define GROWTH 5
+#define POISON 6
 
 class Item
 {

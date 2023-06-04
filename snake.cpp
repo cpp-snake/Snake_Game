@@ -30,18 +30,28 @@ Snake::Snake(int length) : tailLength(length), dir(RIGHT) // 길이를 인자로
     */
 }
 
-void Snake::increase_length()
+void Snake::increase_length(Map &map)
 {
+    attron(COLOR_PAIR(11));
+    mvprintw(tail_y[tailLength], 3 * tail_x[tailLength], "   ");
+    attroff(COLOR_PAIR(11));
+    map.set_stat_value(tail_y[tailLength], tail_x[tailLength], TAIL);
+
+    tail_x.insert(tail_x.end() - 1, tail_x[tailLength]);
+    tail_y.insert(tail_y.end() - 1, tail_y[tailLength]);
     tailLength++;
 }
 
 void Snake::decrease_length(Map &map)
 {
-    tailLength--;
     attron(COLOR_PAIR(1));
-    mvprintw(tail_y[tailLength], 3 * tail_x[tailLength], "   ");
+    mvprintw(tail_y[tailLength - 1], 3 * tail_x[tailLength - 1], "   ");
     attroff(COLOR_PAIR(1));
-    map.set_stat_value(tail_y[tailLength], tail_x[tailLength], 0);
+    map.set_stat_value(tail_y[tailLength - 1], tail_x[tailLength - 1], 0);
+
+    tail_x.erase(tail_x.end() - 2);
+    tail_y.erase(tail_y.end() - 2);
+    tailLength--;
 }
 
 void Snake::move(Map &map)

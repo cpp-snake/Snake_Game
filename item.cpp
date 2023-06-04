@@ -52,13 +52,22 @@ Item Item::generate_poison_item(Map &map)
     std::mt19937 gen(rd());
     std::uniform_int_distribution<int> dist(1, 100000);
 
-    // 난수 생성 및 좌표 설정
-    int rand_x = dist(gen) % (MAPSIZE - 2);
-    int rand_y = dist(gen) % (MAPSIZE - 2);
-
     Item poison;
-    poison.item_x = 1 + (rand_x);
-    poison.item_y = 1 + (rand_y);
+
+    while (true)
+    {
+        // 난수 생성 및 좌표 설정
+        int rand_x = dist(gen) % (MAPSIZE - 2);
+        int rand_y = dist(gen) % (MAPSIZE - 2);
+
+        poison.item_x = rand_x;
+        poison.item_y = rand_y;
+
+        if (map.get_stat_value(poison.item_y, poison.item_x) == 0)
+        {
+            break;
+        }
+    }
 
     // 아이템 출력
     map.set_stat_value(poison.item_y, poison.item_x, POISON);
