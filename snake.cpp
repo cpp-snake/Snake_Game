@@ -62,10 +62,10 @@ void Snake::move_gate(Map &map, Gate& input, Gate& output)
     attroff(COLOR_PAIR(GATE));
     map.set_stat_value(head_y, head_x, GATE);
 
-    int left = (output.get_gate_x() - 1 >= 0) ? map.get_stat_value(output.get_gate_x() - 1, output.get_gate_y()) : 10;
-    int right = (output.get_gate_x() + 1 <= MAPSIZE - 1) ? map.get_stat_value(output.get_gate_x() + 1, output.get_gate_y()) : 10;
-    int up = (output.get_gate_y() - 1 >= 0) ? map.get_stat_value(output.get_gate_x(), output.get_gate_y() - 1) : 10;
-    int down = (output.get_gate_y() + 1 <= MAPSIZE - 1) ? map.get_stat_value(output.get_gate_x(), output.get_gate_y() + 1) : 10;
+    int left = (output.get_gate_x() - 1 >= 0) ? map.get_stat_value(output.get_gate_y(), output.get_gate_x() - 1) : 10;
+    int right = (output.get_gate_x() + 1 <= MAPSIZE - 1) ? map.get_stat_value(output.get_gate_y(), output.get_gate_x() + 1) : 10;
+    int up = (output.get_gate_y() - 1 >= 0) ? map.get_stat_value(output.get_gate_y() - 1, output.get_gate_x()) : 10;
+    int down = (output.get_gate_y() + 1 <= MAPSIZE - 1) ? map.get_stat_value(output.get_gate_y() + 1, output.get_gate_x()) : 10;
 
     switch (dir)
     {
