@@ -7,7 +7,6 @@
 
 using namespace std;
 
-#define item_Appeard_Time 5
 #define GROWTH 5
 #define POISON 6
 

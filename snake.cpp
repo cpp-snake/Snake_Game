@@ -2,6 +2,7 @@
 #include "snake.h"
 #include "map.h"
 #include "settings.h"
+#include "gate.h"
 #include <vector>
 #include <chrono> // TICK에 맞춰 한 번 씩 이동
 #include <thread>
@@ -54,6 +55,124 @@ void Snake::decrease_length(Map &map)
     tailLength--;
 }
 
+void Snake::move_gate(Map &map, Gate& input, Gate& output)
+{
+    attron(COLOR_PAIR(GATE));
+    mvprintw(head_y, 3 * head_x, "   ");
+    attroff(COLOR_PAIR(GATE));
+    map.set_stat_value(head_y, head_x, GATE);
+
+    int left = (output.get_gate_x() - 1 >= 0) ? map.get_stat_value(output.get_gate_x() - 1, output.get_gate_y()) : 10;
+    int right = (output.get_gate_x() + 1 <= MAPSIZE - 1) ? map.get_stat_value(output.get_gate_x() + 1, output.get_gate_y()) : 10;
+    int up = (output.get_gate_y() - 1 >= 0) ? map.get_stat_value(output.get_gate_x(), output.get_gate_y() - 1) : 10;
+    int down = (output.get_gate_y() + 1 <= MAPSIZE - 1) ? map.get_stat_value(output.get_gate_x(), output.get_gate_y() + 1) : 10;
+
+    switch (dir)
+    {
+    case LEFT:
+        if (left == 0 || left == 5 || left == 6)
+        {
+            head_x = output.get_gate_x() - 1; head_y = output.get_gate_y();
+            break;
+        }
+        else if (up == 0 || up == 5 || up == 6)
+        {
+            head_x = output.get_gate_x(); head_y = output.get_gate_y() - 1;
+            set_dir(UP);
+            break;
+        }
+        else if (down == 0 || down == 5 || down == 6)
+        {
+            head_x = output.get_gate_x(); head_y = output.get_gate_y() + 1;
+            set_dir(DOWN);
+            break;
+        }
+        else
+        {
+            head_x = output.get_gate_x() + 1; head_y = output.get_gate_y();
+            set_dir(RIGHT);
+            break;
+        }
+    case RIGHT:
+        if (right == 0 || right == 5 || right == 6)
+        {
+            head_x = output.get_gate_x() + 1; head_y = output.get_gate_y();
+            break;
+        }
+        else if (down == 0 || down == 5 || down == 6)
+        {
+            head_x = output.get_gate_x(); head_y = output.get_gate_y() + 1;
+            set_dir(DOWN);
+            break;
+        }
+        else if (up == 0 || up == 5 || up == 6)
+        {
+            head_x = output.get_gate_x(); head_y = output.get_gate_y() - 1;
+            set_dir(UP);
+            break;
+        }
+        else
+        {
+            head_x = output.get_gate_x() - 1; head_y = output.get_gate_y();
+            set_dir(LEFT);
+            break;
+        }
+    case UP:
+        if (up == 0 || up == 5 || up == 6)
+        {
+            head_x = output.get_gate_x(); head_y = output.get_gate_y() - 1;
+            break;
+        }
+        else if (right == 0 || right == 5 || right == 6)
+        {
+            head_x = output.get_gate_x() + 1; head_y = output.get_gate_y();
+            set_dir(RIGHT);
+            break;
+        }
+        else if (left == 0 || left == 5 || left == 6)
+        {
+            head_x = output.get_gate_x() - 1; head_y = output.get_gate_y();
+            set_dir(LEFT);
+            break;
+        }
+        else
+        {
+            head_x = output.get_gate_x(); head_y = output.get_gate_y() + 1;
+            set_dir(DOWN);
+            break;
+        }
+    case DOWN:
+        if (down == 0 || down == 5 || down == 6)
+        {
+            head_x = output.get_gate_x(); head_y = output.get_gate_y() + 1;
+            break;
+        }
+        else if (left == 0 || left == 5 || left == 6)
+        {
+            head_x = output.get_gate_x() - 1; head_y = output.get_gate_y();
+            set_dir(LEFT);
+            break;
+        }
+        else if (right == 0 || right == 5 || right == 6)
+        {
+            head_x = output.get_gate_x() + 1; head_y = output.get_gate_y();
+            set_dir(RIGHT);
+            break;
+        }
+        else
+        {
+            head_x = output.get_gate_x(); head_y = output.get_gate_y() - 1;
+            set_dir(UP);
+            break;
+        }
+    }
+
+    attron(COLOR_PAIR(12));
+    mvprintw(head_y, 3 * head_x, "   ");
+    attroff(COLOR_PAIR(12));
+    map.set_stat_value(head_y, head_x, 4);
+}
+
 void Snake::move(Map &map)
 { // 키 입력에 따라서 snake 좌표 이동
     // 꼬리 이동
@@ -98,7 +217,7 @@ void Snake::move(Map &map)
                 exit(0);
             }
         }
-    if (tailLength < 2)
+    if (tailLength < 3)
     {
         screen_teardown();
         exit(0);
@@ -150,4 +269,14 @@ int Snake::get_head_x()
 int Snake::get_head_y()
 {
     return head_y;
+}
+
+int Snake::get_tail_x(int i)
+{
+    return tail_x[i];
+}
+
+int Snake::get_tail_y(int i)
+{
+    return tail_y[i];
 }
