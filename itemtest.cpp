@@ -2,43 +2,90 @@
 #include "map.h"
 #include "settings.h"
 #include "item.h"
-#include <iostream>
-#include <thread>
 #include <chrono>
-#include <fstream> //랜덤 시드 설정
-#include <random> //랜덤 시드 설정
-#include <unistd.h> // 랜덤 시드 설정
-#define item_TICK 5
+#include <thread>
 
-void G_Item(Map *map){
-    Item item_g;
-    item_g.generate_Item();
-    item_g.Choice_item(map);
-//    item_g.delete_item(map); << 삭제함수임 갱신할 때마다 삭제하도록 해야하는데 갱신을 못하겠어요..
+#define POISON_ITEM_TICK1 1
+#define POISON_ITEM_TICK2 3
+#define POISON_ITEM_TICK3 4
+#define GROWTH_ITEM_TICK 6
+
+// 좌표 값 출력 디버깅용
+void printMap(Map& map){ 
+    int i = 12, j = 110;
+    move(i++, j);
+    for (int row = 0; row < MAPSIZE; row++)
+    {
+        for (int col = 0; col < MAPSIZE; col++)
+            printw(" %d ", map.get_stat_value(row, col));
+        move(i++, j);
+    }
 }
 
 int main()
 {
+    screen_setup();
     Map map("map_design.txt");
-    initscr();
     map.init();
 
     init_pair_colors();
-    
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        std::uniform_int_distribution<int> dist(0, 1000);
 
-        // 아이템을 1~3개 랜덤 출력
-        int random = 1+dist(gen)%3; // dist(gen)%n : 1~n개 만큼의 아이템을 출력하도록 하는 수
-        std::vector<std::thread> itemThreads(random);
-        for(int i = 0; i < random; i++)
-            itemThreads[i] = std::thread(G_Item, &map);
+    Item item;
 
-        for(int i = 0; i < random; i++)
-            itemThreads[i].join();
+    std::this_thread::sleep_for(std::chrono::seconds(1)); // 1초 동안 아무 것도 안 함
+    Item poison_item1 = item.generate_poison_item(map);
+
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+    Item poison_item2 = item.generate_poison_item(map);
+
+    std::this_thread::sleep_for(std::chrono::seconds(0));
+    Item poison_item3 = item.generate_poison_item(map);
+
+    std::this_thread::sleep_for(std::chrono::seconds(3));
+    Item growth_item = item.generate_growth_item(map);
+
+    auto next_poison_time1 = std::chrono::system_clock::now() + std::chrono::seconds(POISON_ITEM_TICK1);
+    auto next_poison_time2 = std::chrono::system_clock::now() + std::chrono::seconds(POISON_ITEM_TICK2);
+    auto next_poison_time3 = std::chrono::system_clock::now() + std::chrono::seconds(POISON_ITEM_TICK3);
+    auto next_growth_time = std::chrono::system_clock::now() + std::chrono::seconds(GROWTH_ITEM_TICK);
+
+    int ch;
+    while (true) {
+        ch = getch();
+        if (ch == KEY_UP) break; // 윗 방향키 누르면 종료
+
+        auto now = std::chrono::system_clock::now();
+
+        if (now >= next_poison_time1) {
+            poison_item1.delete_item(map, poison_item1);
+            poison_item1 = item.generate_poison_item(map);
+            printMap(map);
+            next_poison_time1 = now + std::chrono::seconds(POISON_ITEM_TICK1);
+        }
+
+        if (now >= next_poison_time2) {
+            poison_item2.delete_item(map, poison_item2);
+            poison_item2 = item.generate_poison_item(map);
+            printMap(map);
+            next_poison_time2 = now + std::chrono::seconds(POISON_ITEM_TICK2);
+        }
+
+        if (now >= next_poison_time3) {
+            poison_item3.delete_item(map, poison_item3);
+            poison_item3 = item.generate_poison_item(map);
+            printMap(map);
+            next_poison_time3 = now + std::chrono::seconds(POISON_ITEM_TICK3);
+        }
+
+        if (now >= next_growth_time) {
+            growth_item.delete_item(map, growth_item);
+            growth_item = item.generate_growth_item(map);
+            printMap(map);
+            next_growth_time = now + std::chrono::seconds(GROWTH_ITEM_TICK);
+        }
+    }
     
-    getch();
-    endwin();
+    screen_teardown();
+
     return 0;
 }

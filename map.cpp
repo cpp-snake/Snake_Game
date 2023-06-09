@@ -26,20 +26,18 @@ void Map::test()
     {
         for (int j = 0; j < MAPSIZE; j++)
         {
-
             cout << map_stat[i][j] << " ";
         }
         cout << endl;
     }
 }
 
-WINDOW *Map::init()
+void Map::init()
 {
     start_color();
     init_pair(3, COLOR_GREEN, COLOR_GREEN);
     init_pair(2, COLOR_WHITE, COLOR_WHITE);
     init_pair(1, COLOR_BLACK, COLOR_BLACK);
-    WINDOW *wMap = subwin(stdscr, MAPSIZE, MAPSIZE, 0, 0);
 
     for (int row = 0; row < MAPSIZE; row++)
     {
@@ -52,26 +50,15 @@ WINDOW *Map::init()
         printw("\n");
     }
 
-    wrefresh(wMap);
-    return wMap;
+    refresh();
 }
 
-int Map::get_stat_value(int row, int col){
+int Map::get_stat_value(int row, int col)
+{
     return map_stat[row][col];
 }
 
-// 아이템이 나올 좌표
-void Map::set_item_map(int row, int col, int item_number)
+void Map::set_stat_value(int row, int col, int value)
 {
-    map_stat[row][col] = item_number;
-}
-
-// 아이템이 삭제되고 좌표가 0으로 돌아감.
-void Map::delete_item_map(int row, int col)
-{
-    init_pair(1, COLOR_BLACK, COLOR_BLACK);
-    map_stat[row][col] = 0;
-    attron(COLOR_PAIR(1));
-    mvprintw(col, 3*row, "   ");
-    attroff(COLOR_PAIR(1));
+    map_stat[row][col] = value;
 }
