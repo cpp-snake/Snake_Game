@@ -26,7 +26,6 @@ void Map::test()
     {
         for (int j = 0; j < MAPSIZE; j++)
         {
-
             cout << map_stat[i][j] << " ";
         }
         cout << endl;
