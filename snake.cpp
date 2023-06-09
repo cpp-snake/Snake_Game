@@ -140,9 +140,13 @@ int Snake::get_head_x()
 int Snake::get_head_y()
 {
     return head_y;
+<<<<<<< HEAD
 }
 
 int Snake::get_snake_length()
 {
     return 1+tailLength;
 }
+=======
+}
+>>>>>>> 75aeba196b41ade45a54afeded65ee494425e03f

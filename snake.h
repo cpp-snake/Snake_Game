@@ -40,8 +40,11 @@ public:
 
     int get_head_x();
     int get_head_y();
+<<<<<<< HEAD
 
     int get_snake_length();
+=======
+>>>>>>> 75aeba196b41ade45a54afeded65ee494425e03f
 };
 
 #endif
