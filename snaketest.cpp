@@ -3,18 +3,11 @@
 #include "snake.h"
 #include "settings.h"
 #include "item.h"
-<<<<<<< HEAD
 #include "board.h"
-=======
->>>>>>> 75aeba196b41ade45a54afeded65ee494425e03f
 #include <vector>
 #include <chrono> // TICK에 맞춰 한 번 씩 이동
 #include <thread>
 #include <stdlib.h>
-<<<<<<< HEAD
-
-=======
->>>>>>> 75aeba196b41ade45a54afeded65ee494425e03f
 using namespace std;
 
 #define POISON_ITEM_TICK1 10
@@ -49,11 +42,7 @@ int main()
     screen_setup();
     Map map("map_design.txt");
     map.init();
-<<<<<<< HEAD
     
-=======
-
->>>>>>> 75aeba196b41ade45a54afeded65ee494425e03f
     init_pair_colors();
 
     Snake snake(3);
@@ -64,15 +53,12 @@ int main()
     Item poison_item2 = item.generate_poison_item(map);
     Item growth_item = item.generate_growth_item(map);
 
-<<<<<<< HEAD
     Board board;    
     board.count_init(snake);
 
     board.makeMissionBoard();
     board.makeScoreBoard();
 
-=======
->>>>>>> 75aeba196b41ade45a54afeded65ee494425e03f
     auto next_poison_time1 = chrono::system_clock::now() + chrono::seconds(POISON_ITEM_TICK1);
     auto next_poison_time2 = chrono::system_clock::now() + chrono::seconds(POISON_ITEM_TICK2);
     auto next_growth_time = chrono::system_clock::now() + chrono::seconds(GROWTH_ITEM_TICK);
@@ -82,42 +68,29 @@ int main()
     auto lastUpdateTime = chrono::system_clock::now(); // 마지막 업데이트 시간 초기화
     chrono::duration<double> elapsedSeconds;
     while (true)
-<<<<<<< HEAD
     {    
-=======
-    {
->>>>>>> 75aeba196b41ade45a54afeded65ee494425e03f
         auto now = chrono::system_clock::now();
         if (meet_item(poison_item1, snake))
         {
             snake.decrease_length(map);
-<<<<<<< HEAD
             board.countMinus(); // 뱀의 길이가 줄어들고 보드판을 건들여야 적용됨
             board.update_score(snake);
-=======
->>>>>>> 75aeba196b41ade45a54afeded65ee494425e03f
             poison_item1 = item.generate_poison_item(map);
             next_poison_time1 = now + chrono::seconds(POISON_ITEM_TICK1);
         }
         if (meet_item(poison_item2, snake))
         {
             snake.decrease_length(map);
-<<<<<<< HEAD
             board.countMinus(); // 뱀의 길이가 줄어들고 보드판을 건들여야 적용됨
             board.update_score(snake);
-=======
->>>>>>> 75aeba196b41ade45a54afeded65ee494425e03f
             poison_item2 = item.generate_poison_item(map);
             next_poison_time2 = now + chrono::seconds(POISON_ITEM_TICK2);
         }
         if (meet_item(growth_item, snake))
         {
             snake.increase_length();
-<<<<<<< HEAD
             board.countPlus(); // 뱀의 길이가 줄어들고 보드판을 건들여야 적용됨
             board.update_score(snake);
-=======
->>>>>>> 75aeba196b41ade45a54afeded65ee494425e03f
             growth_item = item.generate_growth_item(map);
             next_growth_time = now + chrono::seconds(GROWTH_ITEM_TICK);
         }
