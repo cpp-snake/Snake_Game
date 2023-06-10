@@ -30,8 +30,8 @@ class Snake
     Direction dir;      // 뱀 머리 방향
 
 public:
-    Snake(int length = 2);     // 길이를 인자로 받아 뱀을 생성하는 생성자
-    void move_gate(Map &map, Gate& input, Gate& ouput);
+    Snake(int length = 2); // 길이를 인자로 받아 뱀을 생성하는 생성자
+    void move_gate(Map &map, Gate &input, Gate &ouput);
     void move(Map &map);       // 키 입력에 따라서 snake 좌표 이동
     void draw();               // 뱀의 현재 위치에 따라 출력
     void set_dir(Direction d); // 방향 설정
@@ -44,6 +44,7 @@ public:
     int get_head_y();
     int get_tail_x(int i);
     int get_tail_y(int i);
+    int get_snake_length();
 };
 
 #endif

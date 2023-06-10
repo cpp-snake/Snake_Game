@@ -4,15 +4,16 @@
 #include "settings.h"
 #include "item.h"
 #include "gate.h"
+#include "board.h"
 #include <vector>
 #include <chrono> // TICK에 맞춰 한 번 씩 이동
 #include <thread>
 #include <stdlib.h>
 using namespace std;
 
-#define POISON_ITEM_TICK1 10
-#define POISON_ITEM_TICK2 10
-#define GROWTH_ITEM_TICK 10
+#define POISON_ITEM_TICK1 15
+#define POISON_ITEM_TICK2 8
+#define GROWTH_ITEM_TICK 12
 
 bool isRudder(int ch)
 {
@@ -58,6 +59,12 @@ int main()
     Item poison_item2 = item.generate_poison_item(map);
     Item growth_item = item.generate_growth_item(map);
 
+    Board board;
+    board.count_init(snake);
+
+    board.makeMissionBoard();
+    board.makeScoreBoard();
+
     Gate gate;
     Gate gatePair1 = gate.generate_gate(map);
     Gate gatePair2 = gate.generate_gate(map);
@@ -72,7 +79,7 @@ int main()
     chrono::duration<double> elapsedSeconds;
 
     bool gate_flag = true; // 게이트를 통과 하기 전에 true, 통과하는 동안, 통과 한 후 false
-    int input_x, input_y; // 게이트를 통과하기전 xy좌표
+    int input_x, input_y;  // 게이트를 통과하기전 xy좌표
 
     while (true)
     {
@@ -81,6 +88,8 @@ int main()
         {
             snake.decrease_length(map);
             printMap(map);
+            board.countMinus(); // 뱀의 길이가 줄어들고 보드판을 건들여야 적용됨
+            board.update_score(snake);
             poison_item1 = item.generate_poison_item(map);
             next_poison_time1 = now + chrono::seconds(POISON_ITEM_TICK1);
         }
@@ -88,6 +97,8 @@ int main()
         {
             snake.decrease_length(map);
             printMap(map);
+            board.countMinus(); // 뱀의 길이가 줄어들고 보드판을 건들여야 적용됨
+            board.update_score(snake);
             poison_item2 = item.generate_poison_item(map);
             next_poison_time2 = now + chrono::seconds(POISON_ITEM_TICK2);
         }
@@ -95,6 +106,8 @@ int main()
         {
             snake.increase_length(map);
             printMap(map);
+            board.countPlus(); // 뱀의 길이가 줄어들고 보드판을 건들여야 적용됨
+            board.update_score(snake);
             growth_item = item.generate_growth_item(map);
             next_growth_time = now + chrono::seconds(GROWTH_ITEM_TICK);
         }
@@ -126,7 +139,9 @@ int main()
                 gatePair1 = gate.generate_gate(map);
                 gatePair2 = gate.generate_gate(map);
                 gate_flag = true;
-            }            
+                board.countUsedGate();
+                board.update_score(snake);
+            }
         }
 
         if (now >= next_poison_time1)

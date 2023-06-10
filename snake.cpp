@@ -55,7 +55,7 @@ void Snake::decrease_length(Map &map)
     tailLength--;
 }
 
-void Snake::move_gate(Map &map, Gate& input, Gate& output)
+void Snake::move_gate(Map &map, Gate &input, Gate &output)
 {
     attron(COLOR_PAIR(GATE));
     mvprintw(head_y, 3 * head_x, "   ");
@@ -72,96 +72,112 @@ void Snake::move_gate(Map &map, Gate& input, Gate& output)
     case LEFT:
         if (left == 0 || left == 5 || left == 6)
         {
-            head_x = output.get_gate_x() - 1; head_y = output.get_gate_y();
+            head_x = output.get_gate_x() - 1;
+            head_y = output.get_gate_y();
             break;
         }
         else if (up == 0 || up == 5 || up == 6)
         {
-            head_x = output.get_gate_x(); head_y = output.get_gate_y() - 1;
+            head_x = output.get_gate_x();
+            head_y = output.get_gate_y() - 1;
             set_dir(UP);
             break;
         }
         else if (down == 0 || down == 5 || down == 6)
         {
-            head_x = output.get_gate_x(); head_y = output.get_gate_y() + 1;
+            head_x = output.get_gate_x();
+            head_y = output.get_gate_y() + 1;
             set_dir(DOWN);
             break;
         }
         else
         {
-            head_x = output.get_gate_x() + 1; head_y = output.get_gate_y();
+            head_x = output.get_gate_x() + 1;
+            head_y = output.get_gate_y();
             set_dir(RIGHT);
             break;
         }
     case RIGHT:
         if (right == 0 || right == 5 || right == 6)
         {
-            head_x = output.get_gate_x() + 1; head_y = output.get_gate_y();
+            head_x = output.get_gate_x() + 1;
+            head_y = output.get_gate_y();
             break;
         }
         else if (down == 0 || down == 5 || down == 6)
         {
-            head_x = output.get_gate_x(); head_y = output.get_gate_y() + 1;
+            head_x = output.get_gate_x();
+            head_y = output.get_gate_y() + 1;
             set_dir(DOWN);
             break;
         }
         else if (up == 0 || up == 5 || up == 6)
         {
-            head_x = output.get_gate_x(); head_y = output.get_gate_y() - 1;
+            head_x = output.get_gate_x();
+            head_y = output.get_gate_y() - 1;
             set_dir(UP);
             break;
         }
         else
         {
-            head_x = output.get_gate_x() - 1; head_y = output.get_gate_y();
+            head_x = output.get_gate_x() - 1;
+            head_y = output.get_gate_y();
             set_dir(LEFT);
             break;
         }
     case UP:
         if (up == 0 || up == 5 || up == 6)
         {
-            head_x = output.get_gate_x(); head_y = output.get_gate_y() - 1;
+            head_x = output.get_gate_x();
+            head_y = output.get_gate_y() - 1;
             break;
         }
         else if (right == 0 || right == 5 || right == 6)
         {
-            head_x = output.get_gate_x() + 1; head_y = output.get_gate_y();
+            head_x = output.get_gate_x() + 1;
+            head_y = output.get_gate_y();
             set_dir(RIGHT);
             break;
         }
         else if (left == 0 || left == 5 || left == 6)
         {
-            head_x = output.get_gate_x() - 1; head_y = output.get_gate_y();
+            head_x = output.get_gate_x() - 1;
+            head_y = output.get_gate_y();
             set_dir(LEFT);
             break;
         }
         else
         {
-            head_x = output.get_gate_x(); head_y = output.get_gate_y() + 1;
+            head_x = output.get_gate_x();
+            head_y = output.get_gate_y() + 1;
             set_dir(DOWN);
             break;
         }
     case DOWN:
         if (down == 0 || down == 5 || down == 6)
         {
-            head_x = output.get_gate_x(); head_y = output.get_gate_y() + 1;
+            head_x = output.get_gate_x();
+            head_y = output.get_gate_y() + 1;
             break;
         }
         else if (left == 0 || left == 5 || left == 6)
         {
-            head_x = output.get_gate_x() - 1; head_y = output.get_gate_y();
+            head_x = output.get_gate_x() - 1;
+            head_y = output.get_gate_y();
             set_dir(LEFT);
             break;
         }
         else if (right == 0 || right == 5 || right == 6)
         {
-            head_x = output.get_gate_x() + 1; head_y = output.get_gate_y();
+            head_x = output.get_gate_x() + 1;
+            head_y = output.get_gate_y();
             set_dir(RIGHT);
             break;
         }
         else
         {
-            head_x = output.get_gate_x(); head_y = output.get_gate_y() - 1;
+            head_x = output.get_gate_x();
+            head_y = output.get_gate_y() - 1;
             set_dir(UP);
             break;
         }
@@ -279,4 +295,9 @@ int Snake::get_tail_x(int i)
 int Snake::get_tail_y(int i)
 {
     return tail_y[i];
+}
+
+int Snake::get_snake_length()
+{
+    return 1 + tailLength;
 }
