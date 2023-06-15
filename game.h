@@ -12,6 +12,7 @@
 bool isRudder(int ch);
 bool meet_item(Item item, Snake snake);
 bool meet_gate(Gate gate, Snake snake);
+void gameFail();
 void gameStart();
 
 #endif

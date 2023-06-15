@@ -10,6 +10,7 @@
 #include <chrono> // TICK에 맞춰 한 번 씩 이동
 #include <thread>
 #include <stdlib.h>
+#include <fstream>
 using namespace std;
 
 bool isRudder(int ch)
@@ -25,6 +26,32 @@ bool meet_item(Item item, Snake snake)
 bool meet_gate(Gate gate, Snake snake)
 {
     return (gate.get_gate_x() == snake.get_head_x() && gate.get_gate_y() == snake.get_head_y());
+}
+
+void gameFail()
+{
+    clear();
+    Map temp("./map/map_design.txt");
+    temp.init();
+
+    ifstream file("./ascii_text/fail.txt");
+
+    string line;
+    int row = 1;
+    for(int i = 0; i < MAPSIZE - 2; i++)
+    {
+        getline(file, line);
+        mvprintw(row, 3, "%s", line.c_str());
+        row++;
+    }
+    refresh(); // FAIL 띄우고
+    
+    std::chrono::seconds sleepDuration(2); // 2초있다
+    std::this_thread::sleep_for(sleepDuration);
+
+    file.close();
+    screen_teardown(); // 게임종료
+    exit(0); // 터미널 종료
 }
 
 void gameStart()
@@ -151,9 +178,9 @@ void gameStart()
             case KEY_LEFT:
                 if (snake.get_dir() == RIGHT)
                 {
-                    screen_teardown();
-                    exit(0);
-                };
+                    gameFail();
+                }
+
                 if (snake.get_dir() == LEFT)
                     is_direction_changed = FALSE;
                 else
@@ -165,8 +192,7 @@ void gameStart()
             case KEY_RIGHT:
                 if (snake.get_dir() == LEFT)
                 {
-                    screen_teardown();
-                    exit(0);
+                    gameFail();
                 }
 
                 if (snake.get_dir() == RIGHT)
@@ -180,8 +206,7 @@ void gameStart()
             case KEY_UP:
                 if (snake.get_dir() == DOWN)
                 {
-                    screen_teardown();
-                    exit(0);
+                    gameFail();
                 }
 
                 if (snake.get_dir() == UP)
@@ -195,8 +220,7 @@ void gameStart()
             case KEY_DOWN:
                 if (snake.get_dir() == UP)
                 {
-                    screen_teardown();
-                    exit(0);
+                    gameFail();
                 }
 
                 if (snake.get_dir() == DOWN)

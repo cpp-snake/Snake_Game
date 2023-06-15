@@ -39,6 +39,7 @@ void Map::init()
     init_pair(2, COLOR_WHITE, COLOR_WHITE);
     init_pair(1, COLOR_BLACK, COLOR_BLACK);
 
+    move(0,0);
     for (int row = 0; row < MAPSIZE; row++)
     {
         for (int col = 0; col < MAPSIZE; col++)
