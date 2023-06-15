@@ -46,7 +46,7 @@ bool meet_gate(Gate gate, Snake snake)
 int main()
 {
     screen_setup();
-    Map map("map_design.txt");
+    Map map("./map/map_design4.txt");
     map.init();
 
     init_pair_colors();
