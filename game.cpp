@@ -5,32 +5,16 @@
 #include "item.h"
 #include "gate.h"
 #include "board.h"
+#include "game.h"
 #include <vector>
 #include <chrono> // TICK에 맞춰 한 번 씩 이동
 #include <thread>
 #include <stdlib.h>
 using namespace std;
 
-#define POISON_ITEM_TICK1 15
-#define POISON_ITEM_TICK2 8
-#define GROWTH_ITEM_TICK 12
-
 bool isRudder(int ch)
 {
     return ch == KEY_LEFT || ch == KEY_RIGHT || ch == KEY_DOWN || ch == KEY_UP;
-}
-
-// 좌표 값 출력 디버깅용
-void printMap(Map &map)
-{
-    int i = 12, j = 110;
-    move(i++, j);
-    for (int row = 0; row < MAPSIZE; row++)
-    {
-        for (int col = 0; col < MAPSIZE; col++)
-            printw(" %d ", map.get_stat_value(row, col));
-        move(i++, j);
-    }
 }
 
 bool meet_item(Item item, Snake snake)
@@ -43,10 +27,10 @@ bool meet_gate(Gate gate, Snake snake)
     return (gate.get_gate_x() == snake.get_head_x() && gate.get_gate_y() == snake.get_head_y());
 }
 
-int main()
+void gameStart()
 {
     screen_setup();
-    Map map("./map/map_design1.txt");
+    Map map("./map/map_design3.txt");
     map.init();
 
     init_pair_colors();
@@ -87,7 +71,6 @@ int main()
         if (meet_item(poison_item1, snake))
         {
             snake.decrease_length(map);
-            printMap(map);
             board.countMinus(); // 뱀의 길이가 줄어들고 보드판을 건들여야 적용됨
             board.update_score(snake);
             poison_item1 = item.generate_poison_item(map);
@@ -96,7 +79,6 @@ int main()
         if (meet_item(poison_item2, snake))
         {
             snake.decrease_length(map);
-            printMap(map);
             board.countMinus(); // 뱀의 길이가 줄어들고 보드판을 건들여야 적용됨
             board.update_score(snake);
             poison_item2 = item.generate_poison_item(map);
@@ -105,7 +87,6 @@ int main()
         if (meet_item(growth_item, snake))
         {
             snake.increase_length(map);
-            printMap(map);
             board.countPlus(); // 뱀의 길이가 줄어들고 보드판을 건들여야 적용됨
             board.update_score(snake);
             growth_item = item.generate_growth_item(map);
@@ -117,7 +98,6 @@ int main()
             input_x = snake.get_tail_x(0);
             input_y = snake.get_tail_y(0);
             snake.move_gate(map, gatePair1, gatePair2);
-            printMap(map);
             gate_flag = false;
         }
 
@@ -126,7 +106,6 @@ int main()
             input_x = snake.get_tail_x(0);
             input_y = snake.get_tail_y(0);
             snake.move_gate(map, gatePair2, gatePair1);
-            printMap(map);
             gate_flag = false;
         }
 
@@ -235,7 +214,6 @@ int main()
             {
                 snake.move(map);
                 snake.draw();
-                printMap(map);
                 lastUpdateTime = std::chrono::system_clock::now(); // 업데이트 시간 갱신
             }
         }
@@ -250,13 +228,10 @@ int main()
             { // 1초 이상 경과한 경우
                 snake.move(map);
                 snake.draw();
-                printMap(map);
                 lastUpdateTime = currentTime; // 업데이트 시간 갱신
             }
         }
     }
 
     screen_teardown();
-
-    return 0;
 }
