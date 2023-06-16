@@ -9,7 +9,7 @@
 #include <thread>
 using namespace std;
 
-Snake::Snake(int length) : tailLength(length), dir(RIGHT) // 길이를 인자로 받아 뱀 생성
+Snake::Snake(int length) : tailLength(length), dir(RIGHT), speed(0.4)// 길이를 인자로 받아 뱀 생성
 {
     head_x = head_y = MAPSIZE / 2;
 
@@ -292,4 +292,14 @@ int Snake::get_tail_y(int i)
 int Snake::get_snake_length()
 {
     return 1 + tailLength;
+}
+
+float Snake::get_speed()
+{
+    return speed;
+}
+
+void Snake::set_speed(float x)
+{
+    speed = x;
 }

@@ -9,6 +9,7 @@
 
 using namespace std;
 
+Gate::Gate(int x, int y): gate_x(x),gate_y(y) {}
 Gate Gate::generate_gate(Map &map)
 {
     // 랜덤 시드를 설정하는 부분

@@ -246,7 +246,7 @@ int main()
             auto currentTime = std::chrono::system_clock::now();
             elapsedSeconds = currentTime - lastUpdateTime;
 
-            if (elapsedSeconds.count() >= TICK)
+            if (elapsedSeconds.count() >= snake.get_speed())
             { // 1초 이상 경과한 경우
                 snake.move(map);
                 snake.draw();

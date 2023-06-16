@@ -33,7 +33,7 @@ bool meet_gate(Gate gate, Snake snake)
 void gameFail()
 {
     clear();
-    Map temp("./map/map_design.txt");
+    Map temp("./map/map_design1.txt");
     temp.init();
 
     ifstream file("./ascii_text/fail.txt");
@@ -60,7 +60,7 @@ void gameClear()
 {
     count++;
     clear();
-    Map temp("./map/map_design.txt");
+    Map temp("./map/map_design1.txt");
     temp.init();
 
     ifstream file("./ascii_text/clear.txt");
@@ -95,8 +95,8 @@ void gameClear()
 
 void gameStart(const std::string& map_design_path)
 {
-    screen_setup();
     Map map(map_design_path);
+    screen_setup();
     map.init();
 
     init_pair_colors();
@@ -116,8 +116,8 @@ void gameStart(const std::string& map_design_path)
     board.makeScoreBoard();
 
     Gate gate;
-    Gate gatePair1 = gate.generate_gate(map);
-    Gate gatePair2 = gate.generate_gate(map);
+    Gate gatePair1;
+    Gate gatePair2;
 
     auto next_poison_time1 = chrono::system_clock::now() + chrono::seconds(POISON_ITEM_TICK1);
     auto next_poison_time2 = chrono::system_clock::now() + chrono::seconds(POISON_ITEM_TICK2);
@@ -128,11 +128,20 @@ void gameStart(const std::string& map_design_path)
     auto lastUpdateTime = chrono::system_clock::now(); // 마지막 업데이트 시간 초기화
     chrono::duration<double> elapsedSeconds;
 
+    bool gate_init = true;
     bool gate_flag = true; // 게이트를 통과 하기 전에 true, 통과하는 동안, 통과 한 후 false
     int input_x, input_y;  // 게이트를 통과하기전 xy좌표
 
     while (true)
     {
+        if(snake.get_snake_length() == 6 && gate_init)
+        {
+            snake.set_speed(0.25);
+            gatePair1 = gate.generate_gate(map);
+            gatePair2 = gate.generate_gate(map);
+            gate_init = false;
+        }
+
         auto now = chrono::system_clock::now();
         if (meet_item(poison_item1, snake))
         {
@@ -287,8 +296,8 @@ void gameStart(const std::string& map_design_path)
             auto currentTime = std::chrono::system_clock::now();
             elapsedSeconds = currentTime - lastUpdateTime;
 
-            if (elapsedSeconds.count() >= TICK)
-            { // 1초 이상 경과한 경우
+            if (elapsedSeconds.count() >= snake.get_speed()) // TICK이 경과한 경우
+            { 
                 snake.move(map);
                 snake.draw();
                 lastUpdateTime = currentTime; // 업데이트 시간 갱신
