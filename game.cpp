@@ -33,6 +33,7 @@ bool meet_gate(Gate gate, Snake snake)
 void gameFail()
 {
     clear();
+    keypad(stdscr, FALSE);
     Map temp("./map/map_design1.txt");
     temp.init();
 
@@ -60,6 +61,7 @@ void gameClear()
 {
     count++;
     clear();
+    keypad(stdscr, FALSE);
     Map temp("./map/map_design1.txt");
     temp.init();
 
