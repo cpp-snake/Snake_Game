@@ -2,10 +2,11 @@
 #include "snake.h"
 #include "map.h"
 #include "settings.h"
+#include "gate.h"
+#include "game.h"
 #include <vector>
 #include <chrono> // TICK에 맞춰 한 번 씩 이동
 #include <thread>
-#include <stdlib.h> // exit(0);
 using namespace std;
 
 Snake::Snake(int length) : tailLength(length), dir(RIGHT) // 길이를 인자로 받아 뱀 생성
@@ -30,18 +31,162 @@ Snake::Snake(int length) : tailLength(length), dir(RIGHT) // 길이를 인자로
     */
 }
 
-void Snake::increase_length()
+void Snake::increase_length(Map &map)
 {
+    attron(COLOR_PAIR(11));
+    mvprintw(tail_y[tailLength], 3 * tail_x[tailLength], "   ");
+    attroff(COLOR_PAIR(11));
+    map.set_stat_value(tail_y[tailLength], tail_x[tailLength], TAIL);
+
+    tail_x.insert(tail_x.end() - 1, tail_x[tailLength]);
+    tail_y.insert(tail_y.end() - 1, tail_y[tailLength]);
     tailLength++;
 }
 
 void Snake::decrease_length(Map &map)
 {
-    tailLength--;
     attron(COLOR_PAIR(1));
-    mvprintw(tail_y[tailLength], 3 * tail_x[tailLength], "   ");
+    mvprintw(tail_y[tailLength - 1], 3 * tail_x[tailLength - 1], "   ");
     attroff(COLOR_PAIR(1));
-    map.set_stat_value(tail_y[tailLength], tail_x[tailLength], 0);
+    map.set_stat_value(tail_y[tailLength - 1], tail_x[tailLength - 1], 0);
+
+    tail_x.erase(tail_x.end() - 2);
+    tail_y.erase(tail_y.end() - 2);
+    tailLength--;
+}
+
+void Snake::move_gate(Map &map, Gate &input, Gate &output)
+{
+    attron(COLOR_PAIR(GATE));
+    mvprintw(head_y, 3 * head_x, "   ");
+    attroff(COLOR_PAIR(GATE));
+    map.set_stat_value(head_y, head_x, GATE);
+
+    int left = (output.get_gate_x() - 1 >= 0) ? map.get_stat_value(output.get_gate_y(), output.get_gate_x() - 1) : 10;
+    int right = (output.get_gate_x() + 1 <= MAPSIZE - 1) ? map.get_stat_value(output.get_gate_y(), output.get_gate_x() + 1) : 10;
+    int up = (output.get_gate_y() - 1 >= 0) ? map.get_stat_value(output.get_gate_y() - 1, output.get_gate_x()) : 10;
+    int down = (output.get_gate_y() + 1 <= MAPSIZE - 1) ? map.get_stat_value(output.get_gate_y() + 1, output.get_gate_x()) : 10;
+
+    switch (dir)
+    {
+    case LEFT:
+        if (left == 0 || left == 5 || left == 6)
+        {
+            head_x = output.get_gate_x() - 1;
+            head_y = output.get_gate_y();
+            break;
+        }
+        else if (up == 0 || up == 5 || up == 6)
+        {
+            head_x = output.get_gate_x();
+            head_y = output.get_gate_y() - 1;
+            set_dir(UP);
+            break;
+        }
+        else if (down == 0 || down == 5 || down == 6)
+        {
+            head_x = output.get_gate_x();
+            head_y = output.get_gate_y() + 1;
+            set_dir(DOWN);
+            break;
+        }
+        else
+        {
+            head_x = output.get_gate_x() + 1;
+            head_y = output.get_gate_y();
+            set_dir(RIGHT);
+            break;
+        }
+    case RIGHT:
+        if (right == 0 || right == 5 || right == 6)
+        {
+            head_x = output.get_gate_x() + 1;
+            head_y = output.get_gate_y();
+            break;
+        }
+        else if (down == 0 || down == 5 || down == 6)
+        {
+            head_x = output.get_gate_x();
+            head_y = output.get_gate_y() + 1;
+            set_dir(DOWN);
+            break;
+        }
+        else if (up == 0 || up == 5 || up == 6)
+        {
+            head_x = output.get_gate_x();
+            head_y = output.get_gate_y() - 1;
+            set_dir(UP);
+            break;
+        }
+        else
+        {
+            head_x = output.get_gate_x() - 1;
+            head_y = output.get_gate_y();
+            set_dir(LEFT);
+            break;
+        }
+    case UP:
+        if (up == 0 || up == 5 || up == 6)
+        {
+            head_x = output.get_gate_x();
+            head_y = output.get_gate_y() - 1;
+            break;
+        }
+        else if (right == 0 || right == 5 || right == 6)
+        {
+            head_x = output.get_gate_x() + 1;
+            head_y = output.get_gate_y();
+            set_dir(RIGHT);
+            break;
+        }
+        else if (left == 0 || left == 5 || left == 6)
+        {
+            head_x = output.get_gate_x() - 1;
+            head_y = output.get_gate_y();
+            set_dir(LEFT);
+            break;
+        }
+        else
+        {
+            head_x = output.get_gate_x();
+            head_y = output.get_gate_y() + 1;
+            set_dir(DOWN);
+            break;
+        }
+    case DOWN:
+        if (down == 0 || down == 5 || down == 6)
+        {
+            head_x = output.get_gate_x();
+            head_y = output.get_gate_y() + 1;
+            break;
+        }
+        else if (left == 0 || left == 5 || left == 6)
+        {
+            head_x = output.get_gate_x() - 1;
+            head_y = output.get_gate_y();
+            set_dir(LEFT);
+            break;
+        }
+        else if (right == 0 || right == 5 || right == 6)
+        {
+            head_x = output.get_gate_x() + 1;
+            head_y = output.get_gate_y();
+            set_dir(RIGHT);
+            break;
+        }
+        else
+        {
+            head_x = output.get_gate_x();
+            head_y = output.get_gate_y() - 1;
+            set_dir(UP);
+            break;
+        }
+    }
+
+    attron(COLOR_PAIR(12));
+    mvprintw(head_y, 3 * head_x, "   ");
+    attroff(COLOR_PAIR(12));
+    map.set_stat_value(head_y, head_x, 4);
 }
 
 void Snake::move(Map &map)
@@ -71,29 +216,21 @@ void Snake::move(Map &map)
         head_y++;
         break;
     }
-    // 일단 게임종료를 exit로 구현
+
     // WALL에 부딪히면 종료
     if (map.get_stat_value(head_y, head_x) == 1)
     {
-        screen_teardown();
-        exit(0);
+        gameFail();
     }
     // 몸에 부딪히면 종료
     if (tailLength > 3)
         for (int i = 3; i < tailLength; i++)
         {
             if (head_x == tail_x[i] && head_y == tail_y[i])
-            {
-                screen_teardown();
-                exit(0);
-            }
+                gameFail();
         }
-    if (tailLength < 2)
-    {
-        screen_teardown();
-        exit(0);
-    }
-    // 맵 좌표 수정 뱀 머리:3 꼬리:4
+    if (tailLength < 3)
+        gameFail();
 
     // 이전 꼬리 부분 좌표 제거(안지우면 그대로 두고 감)
     map.set_stat_value(tail_y[tailLength], tail_x[tailLength], 0);
@@ -142,7 +279,17 @@ int Snake::get_head_y()
     return head_y;
 }
 
+int Snake::get_tail_x(int i)
+{
+    return tail_x[i];
+}
+
+int Snake::get_tail_y(int i)
+{
+    return tail_y[i];
+}
+
 int Snake::get_snake_length()
 {
-    return 1+tailLength;
+    return 1 + tailLength;
 }

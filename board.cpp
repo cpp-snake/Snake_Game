@@ -5,6 +5,7 @@
 #include "board.h"
 #include "item.h"
 #include "snake.h"
+#include "game.h"
 
 using namespace std;
 
@@ -59,10 +60,10 @@ WINDOW* Board:: makeMissionBoard()
     else
         mvwprintw(wMissionBoard, 7, 1, "-: 1 ( )");
 
-    if(countGate > 3)
-        mvwprintw(wMissionBoard, 9, 1, "G: 1 (v)");
+    if(countGate > 2)
+        mvwprintw(wMissionBoard, 9, 1, "G: 3 (v)");
     else
-        mvwprintw(wMissionBoard, 9, 1, "G: 1 ( )");
+        mvwprintw(wMissionBoard, 9, 1, "G: 3 ( )");
     wrefresh(wMissionBoard);
     wattroff(wMissionBoard, A_BOLD);
 
@@ -97,7 +98,6 @@ void Board::count_init(Snake &snake)
     countGate = 0;
 }
 
-
 // 아이템을 먹으면 갱신
 void Board::update_score(Snake &snake)
 {
@@ -107,4 +107,11 @@ void Board::update_score(Snake &snake)
         maxB = curB;
     makeMissionBoard();
     makeScoreBoard();
+    nextStage();
+}
+
+void Board::nextStage()
+{
+    if(maxB > 6 && countGrowth > 1 && countPoison > 0 && countGate > 2)
+        gameClear();
 }

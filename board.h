@@ -25,6 +25,7 @@ public:
     void countUsedGate(); // 게이트를 사용하면 게이트 이용한 횟수가 늘어남
     void count_init(Snake &snake); // 상태 초기화
     void update_score(Snake &snake); // 아이템을 먹으면 갱신
+    void nextStage();
 };
 
 #endif
