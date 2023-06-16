@@ -40,20 +40,20 @@ void gameFail()
 
     string line;
     int row = 1;
-    for(int i = 0; i < MAPSIZE - 2; i++)
+    for (int i = 0; i < MAPSIZE - 2; i++)
     {
         getline(file, line);
         mvprintw(row, 3, "%s", line.c_str());
         row++;
     }
     refresh(); // FAIL 띄우고
-    
+
     std::chrono::seconds sleepDuration(2); // 2초있다
     std::this_thread::sleep_for(sleepDuration);
 
     file.close();
     screen_teardown(); // 게임종료
-    exit(0); // 터미널 종료
+    exit(0);           // 터미널 종료
 }
 
 void gameClear()
@@ -67,33 +67,33 @@ void gameClear()
 
     string line;
     int row = 1;
-    for(int i = 0; i < MAPSIZE - 2; i++)
+    for (int i = 0; i < MAPSIZE - 2; i++)
     {
         getline(file, line);
         mvprintw(row, 3, "%s", line.c_str());
         row++;
     }
     refresh(); // Clear 띄우고
-    
+
     std::chrono::seconds sleepDuration(3); // 3초있다
     std::this_thread::sleep_for(sleepDuration);
 
-    if(count==5)
+    if (count == 5)
     {
         file.close();
         screen_teardown(); // 게임종료
-        exit(0); // 터미널 종료
+        exit(0);           // 터미널 종료
     }
     else
     {
         // 게임 재시작
-        char buffer[50]; // 충분히 큰 버퍼
+        char buffer[50];                                  // 충분히 큰 버퍼
         sprintf(buffer, "./map/map_design%d.txt", count); // 버퍼에 맵 위치 입력
-        gameStart(buffer); // 터미널 종료하지 않고 gameStart 함수를 호출
+        gameStart(buffer);                                // 터미널 종료하지 않고 gameStart 함수를 호출
     }
 }
 
-void gameStart(const std::string& map_design_path)
+void gameStart(const std::string &map_design_path)
 {
     screen_setup();
     Map map(map_design_path);
@@ -126,7 +126,9 @@ void gameStart(const std::string& map_design_path)
     int ch;
     bool is_direction_changed = TRUE;
     auto lastUpdateTime = chrono::system_clock::now(); // 마지막 업데이트 시간 초기화
+    auto countLastTime = chrono::system_clock::now();
     chrono::duration<double> elapsedSeconds;
+    chrono::seconds sec;
 
     bool gate_flag = true; // 게이트를 통과 하기 전에 true, 통과하는 동안, 통과 한 후 false
     int input_x, input_y;  // 게이트를 통과하기전 xy좌표
@@ -134,6 +136,13 @@ void gameStart(const std::string& map_design_path)
     while (true)
     {
         auto now = chrono::system_clock::now();
+        sec = chrono::duration_cast<chrono::seconds>(now - countLastTime);
+        if (sec.count() >= 1)
+        {
+            board.countSecPlus();
+            board.update_score(snake);
+            countLastTime = now;
+        }
         if (meet_item(poison_item1, snake))
         {
             snake.decrease_length(map);
