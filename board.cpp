@@ -9,6 +9,8 @@
 
 using namespace std;
 
+extern int count;
+
 // 상태 초기화
 void Board::init()
 {
@@ -43,25 +45,25 @@ WINDOW *Board::makeMissionBoard()
 
     wattron(wMissionBoard, A_BOLD);
     mvwprintw(wMissionBoard, 1, 1, "Mission ");
-    if (maxB > 6)
-        mvwprintw(wMissionBoard, 3, 1, "B: 7 (v)");
+    if (maxB >= count*2+3)
+        mvwprintw(wMissionBoard, 3, 1, "B: %d (v)", count*2+3);
     else
-        mvwprintw(wMissionBoard, 3, 1, "B: 7 ( )");
+        mvwprintw(wMissionBoard, 3, 1, "B: %d ( )", count*2+3);
 
-    if (countGrowth > 1)
-        mvwprintw(wMissionBoard, 5, 1, "+: 2 (v)");
+    if (countGrowth >= count*2)
+        mvwprintw(wMissionBoard, 5, 1, "+: %d (v)", count*2);
     else
-        mvwprintw(wMissionBoard, 5, 1, "+: 2 ( )");
+        mvwprintw(wMissionBoard, 5, 1, "+: %d ( )", count*2);
 
-    if (countPoison > 0)
-        mvwprintw(wMissionBoard, 7, 1, "-: 1 (v)");
+    if (countPoison >= count)
+        mvwprintw(wMissionBoard, 7, 1, "-: %d (v)", count);
     else
-        mvwprintw(wMissionBoard, 7, 1, "-: 1 ( )");
+        mvwprintw(wMissionBoard, 7, 1, "-: %d ( )", count);
 
     if (countGate > 2)
-        mvwprintw(wMissionBoard, 9, 1, "G: 3 (v)");
+        mvwprintw(wMissionBoard, 9, 1, "G: %d (v)", count);
     else
-        mvwprintw(wMissionBoard, 9, 1, "G: 3 ( )");
+        mvwprintw(wMissionBoard, 9, 1, "G: %d ( )", count);
     wrefresh(wMissionBoard);
     wattroff(wMissionBoard, A_BOLD);
 
@@ -116,6 +118,6 @@ void Board::update_score(Snake &snake)
 
 void Board::nextStage()
 {
-    if (maxB > 6 && countGrowth > 1 && countPoison > 0 && countGate > 2)
+    if (maxB >= count*2+3 && countGrowth >= count*2 && countPoison >= count && countGate >= count)
         gameClear();
 }
