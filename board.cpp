@@ -60,7 +60,7 @@ WINDOW *Board::makeMissionBoard()
     else
         mvwprintw(wMissionBoard, 7, 1, "-: %d ( )", count);
 
-    if (countGate > 2)
+    if (countGate >= count)
         mvwprintw(wMissionBoard, 9, 1, "G: %d (v)", count);
     else
         mvwprintw(wMissionBoard, 9, 1, "G: %d ( )", count);
