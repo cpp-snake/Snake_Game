@@ -3,10 +3,10 @@
 #include "map.h"
 #include "settings.h"
 #include "gate.h"
+#include "game.h"
 #include <vector>
 #include <chrono> // TICK에 맞춰 한 번 씩 이동
 #include <thread>
-#include <stdlib.h> // exit(0);
 using namespace std;
 
 Snake::Snake(int length) : tailLength(length), dir(RIGHT) // 길이를 인자로 받아 뱀 생성
@@ -216,29 +216,21 @@ void Snake::move(Map &map)
         head_y++;
         break;
     }
-    // 일단 게임종료를 exit로 구현
+
     // WALL에 부딪히면 종료
     if (map.get_stat_value(head_y, head_x) == 1)
     {
-        screen_teardown();
-        exit(0);
+        gameFail();
     }
     // 몸에 부딪히면 종료
     if (tailLength > 3)
         for (int i = 3; i < tailLength; i++)
         {
             if (head_x == tail_x[i] && head_y == tail_y[i])
-            {
-                screen_teardown();
-                exit(0);
-            }
+                gameFail();
         }
     if (tailLength < 3)
-    {
-        screen_teardown();
-        exit(0);
-    }
-    // 맵 좌표 수정 뱀 머리:3 꼬리:4
+        gameFail();
 
     // 이전 꼬리 부분 좌표 제거(안지우면 그대로 두고 감)
     map.set_stat_value(tail_y[tailLength], tail_x[tailLength], 0);

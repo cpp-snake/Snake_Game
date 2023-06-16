@@ -5,20 +5,21 @@
 #include "board.h"
 #include "item.h"
 #include "snake.h"
+#include "game.h"
 
 using namespace std;
 
 // 상태 초기화
 void Board::init()
-{
-    WINDOW *scoreBoard = makeScoreBoard();
-    WINDOW *missionBoard = makeMissionBoard();
+{    
+    WINDOW* scoreBoard = makeScoreBoard();
+    WINDOW* missionBoard = makeMissionBoard();
 }
 
 // ScoreBoard 생성
-WINDOW *Board::makeScoreBoard()
+WINDOW* Board:: makeScoreBoard()
 {
-    WINDOW *wScoreBoard = subwin(stdscr, BOARDSIZE - 1, BOARDSIZE * 2, 0, 3 * MAPSIZE + 10);
+    WINDOW *wScoreBoard = subwin(stdscr, BOARDSIZE-1, BOARDSIZE*2, 0, 3*MAPSIZE + 10);
     box(wScoreBoard, 0, 0);
 
     wattron(wScoreBoard, A_BOLD);
@@ -34,29 +35,32 @@ WINDOW *Board::makeScoreBoard()
 }
 
 // MissionBoard 생성
-WINDOW *Board::makeMissionBoard()
+WINDOW* Board:: makeMissionBoard()
 {
-    WINDOW *wMissionBoard = subwin(stdscr, BOARDSIZE - 1, BOARDSIZE * 2, 15, 3 * MAPSIZE + 10);
+    WINDOW *wMissionBoard = subwin(stdscr, BOARDSIZE-1, BOARDSIZE*2, 15, 3*MAPSIZE + 10);
     box(wMissionBoard, 0, 0);
+
+    
 
     wattron(wMissionBoard, A_BOLD);
     mvwprintw(wMissionBoard, 1, 1, "Mission ");
-    if (maxB > 6)
+    if(maxB > 6)
         mvwprintw(wMissionBoard, 3, 1, "B: 7 (v)");
     else
         mvwprintw(wMissionBoard, 3, 1, "B: 7 ( )");
 
-    if (countGrowth > 1)
+    if(countGrowth > 1)
         mvwprintw(wMissionBoard, 5, 1, "+: 2 (v)");
     else
         mvwprintw(wMissionBoard, 5, 1, "+: 2 ( )");
 
-    if (countPoison > 0)
+
+    if(countPoison > 0)
         mvwprintw(wMissionBoard, 7, 1, "-: 1 (v)");
     else
         mvwprintw(wMissionBoard, 7, 1, "-: 1 ( )");
 
-    if (countGate > 2)
+    if(countGate > 2)
         mvwprintw(wMissionBoard, 9, 1, "G: 3 (v)");
     else
         mvwprintw(wMissionBoard, 9, 1, "G: 3 ( )");
@@ -99,8 +103,15 @@ void Board::update_score(Snake &snake)
 {
     // 뱀의 길이를 가져옴
     curB = snake.get_snake_length();
-    if (curB > maxB)
+    if(curB > maxB)
         maxB = curB;
     makeMissionBoard();
     makeScoreBoard();
+    nextStage();
+}
+
+void Board::nextStage()
+{
+    if(maxB > 6 && countGrowth > 1 && countPoison > 0 && countGate > 2)
+        gameClear();
 }
