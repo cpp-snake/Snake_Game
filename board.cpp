@@ -45,10 +45,10 @@ WINDOW *Board::makeMissionBoard()
 
     wattron(wMissionBoard, A_BOLD);
     mvwprintw(wMissionBoard, 1, 1, "Mission ");
-    if (maxB >= count*2+3)
-        mvwprintw(wMissionBoard, 3, 1, "B: %d (v)", count*2+3);
+    if (maxB >= count+4)
+        mvwprintw(wMissionBoard, 3, 1, "B: %d (v)", count+4);
     else
-        mvwprintw(wMissionBoard, 3, 1, "B: %d ( )", count*2+3);
+        mvwprintw(wMissionBoard, 3, 1, "B: %d ( )", count+4);
 
     if (countGrowth >= count*2)
         mvwprintw(wMissionBoard, 5, 1, "+: %d (v)", count*2);
@@ -60,7 +60,7 @@ WINDOW *Board::makeMissionBoard()
     else
         mvwprintw(wMissionBoard, 7, 1, "-: %d ( )", count);
 
-    if (countGate > 2)
+    if (countGate >= count)
         mvwprintw(wMissionBoard, 9, 1, "G: %d (v)", count);
     else
         mvwprintw(wMissionBoard, 9, 1, "G: %d ( )", count);
@@ -118,6 +118,6 @@ void Board::update_score(Snake &snake)
 
 void Board::nextStage()
 {
-    if (maxB >= count*2+3 && countGrowth >= count*2 && countPoison >= count && countGate >= count)
+    if (maxB >= count+4 && countGrowth >= count*2 && countPoison >= count && countGate >= count)
         gameClear();
 }
